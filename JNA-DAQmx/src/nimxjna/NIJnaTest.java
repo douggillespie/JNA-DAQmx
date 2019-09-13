@@ -9,6 +9,11 @@ import com.sun.jna.ptr.NativeLongByReference;
 import nimxjna.JNA_DAQmx.NiJNA.DAQmxDoneEventCallbackPtr;
 import nimxjna.JNA_DAQmx.NiJNA.DAQmxEveryNSamplesEventCallbackPtr;
 
+/**
+ * Test of some basic DAQmx analog input functions using polled and continuous sampling
+ * @author Doug Gillespie
+ *
+ */
 public class NIJnaTest {
 
 	JNA_DAQmx niJna;
@@ -33,8 +38,8 @@ public class NIJnaTest {
 		long loadT = niJna.getLoadTime();
 		System.out.printf("Ni library took %3.1fms to load\n", loadT/1.0e6);
 
-		int[] serialNum = new int[1];
-		int[] isSim = new int[1];
+		IntByReference serialNum = new IntByReference();
+		IntByReference isSim = new IntByReference();
 		String[] allNames = niJna.getDeviceList();
 		for (int i = 0; i < allNames.length; i++) {
 			String devName = allNames[i];
@@ -43,7 +48,7 @@ public class NIJnaTest {
 			int ans = niJna.ni.DAQmxGetDevSerialNum(devName, serialNum);
 			int ans2 = niJna.ni.DAQmxGetDevIsSimulated(devName, isSim);
 			System.out.printf("Device %d: %s serial number ans = %d, number = %d (0x%X), simulated: %s\n", 
-					i, devName, ans, serialNum[0],serialNum[0],isSim[0]>0?"TRUE":"FALSE");
+					i, devName, ans, serialNum.getValue(),serialNum.getValue(),isSim.getValue()>0?"TRUE":"FALSE");
 			byte[] chanData = new byte[1024];
 			ans = niJna.ni.DAQmxGetDevAIPhysicalChans(devName, chanData, chanData.length);
 			System.out.println(new String(chanData));
@@ -103,7 +108,7 @@ public class NIJnaTest {
 			niJna.ni.DAQmxStartTask(handle);
 
 			try {
-				Thread.sleep(3000);
+				Thread.sleep(30000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
