@@ -6,12 +6,12 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 
-import nimxjna.NILibJna.NiJNA.DAQmxDoneEventCallbackPtr;
-import nimxjna.NILibJna.NiJNA.DAQmxEveryNSamplesEventCallbackPtr;
+import nimxjna.JNA_DAQmx.NiJNA.DAQmxDoneEventCallbackPtr;
+import nimxjna.JNA_DAQmx.NiJNA.DAQmxEveryNSamplesEventCallbackPtr;
 
 public class NIJnaTest {
 
-	NILibJna niJna;
+	JNA_DAQmx niJna;
 	
 	private int nChan = 2;
 
@@ -25,8 +25,8 @@ public class NIJnaTest {
 	private void run() {
 		System.out.printf("Running %d bit platform\n\n", Platform.is64Bit() ? 64 : 32);
 		try {
-			niJna = new NILibJna();
-		} catch (NIJnaException e) {
+			niJna = new JNA_DAQmx();
+		} catch (DAQmxException e) {
 			System.out.println(e.getMessage());
 			return;
 		}
@@ -63,7 +63,7 @@ public class NIJnaTest {
 		System.out.printf("Task handle is %d (0x%016X)\n", handle, handle);
 		for (int i = 0; i < nChan; i++) {
 			errWrap(ans = niJna.ni.DAQmxCreateAIVoltageChan(handle, channelNames[i], "ch"+i, 
-					NIConstants.DAQmx_Val_RSE, aiRanges[iRange][0], aiRanges[iRange][1], NIConstants.DAQmx_Val_Volts, null));
+					DAQmxConstants.DAQmx_Val_RSE, aiRanges[iRange][0], aiRanges[iRange][1], DAQmxConstants.DAQmx_Val_Volts, null));
 		}
 		//		double[] volts = new double[1];
 		/*
@@ -88,15 +88,15 @@ public class NIJnaTest {
 			 * Read continuously and extract data from a callback buffer. 
 			 */
 			int sampleRate = 500000;
-			errWrap(niJna.ni.DAQmxCfgSampClkTiming(handle, "", sampleRate, NIConstants.DAQmx_Val_Rising, 
-					NIConstants.DAQmx_Val_ContSamps, 0));
+			errWrap(niJna.ni.DAQmxCfgSampClkTiming(handle, "", sampleRate, DAQmxConstants.DAQmx_Val_Rising, 
+					DAQmxConstants.DAQmx_Val_ContSamps, 0));
 
 			byte[] cd = new byte[0];
 
 			DAQmxEveryNSamplesEventCallback callback = new DAQmxEveryNSamplesEventCallback();
 			DoneCallback doneCallback = new DoneCallback();
 
-			errWrap(niJna.ni.DAQmxRegisterEveryNSamplesEvent(handle, NIConstants.DAQmx_Val_Acquired_Into_Buffer, 
+			errWrap(niJna.ni.DAQmxRegisterEveryNSamplesEvent(handle, DAQmxConstants.DAQmx_Val_Acquired_Into_Buffer, 
 					sampleRate/10, 0, callback, null));
 			niJna.ni.DAQmxRegisterDoneEvent(handle, 0, doneCallback, null);
 
@@ -133,7 +133,7 @@ public class NIJnaTest {
 			int ans;
 			int[] sr = new int[1];
 
-			errWrap(ans = niJna.ni.DAQmxReadAnalogF64(taskHandle, nSamples, 0.f, NIConstants.DAQmx_Val_GroupByScanNumber, readBuff, nSamples*nChan, sampsRead, null));
+			errWrap(ans = niJna.ni.DAQmxReadAnalogF64(taskHandle, nSamples, 0.f, DAQmxConstants.DAQmx_Val_GroupByScanNumber, readBuff, nSamples*nChan, sampsRead, null));
 			System.out.printf("Callback %d, ev %d samples %d, read %d, first %5.2f\n", ++calls, everyNsamplesEventType, nSamples, sampsRead.getValue(),
 					readBuff[0]);
 			return 0;

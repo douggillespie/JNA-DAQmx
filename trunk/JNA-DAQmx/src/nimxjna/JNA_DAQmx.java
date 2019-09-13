@@ -17,7 +17,7 @@ import com.sun.jna.ptr.NativeLongByReference;
  * @author Doug Gillespie
  *
  */
-public class NILibJna {
+public class JNA_DAQmx {
 
 	public NiJNA ni = null;
 	private long loadTime;
@@ -25,10 +25,10 @@ public class NILibJna {
 
 	/**
 	 * Constructor for the library interface. 
-	 * @throws NIJnaException thrown if the library cannot be loaded 
+	 * @throws DAQmxException thrown if the library cannot be loaded 
 	 * (e.g. if NI drivers are not installed or on an unsupported platform) 
 	 */
-	public NILibJna() throws NIJnaException {
+	public JNA_DAQmx() throws DAQmxException {
 		super();
 		long loadStart = System.nanoTime();
 		String lib = "nicaiu";
@@ -36,7 +36,7 @@ public class NILibJna {
 			ni = Native.load(lib, NiJNA.class);
 		}
 		catch (Error e) {
-			throw new NIJnaException(String.format("National instruments library %s is not available: %s", lib, e.getMessage()));
+			throw new DAQmxException(String.format("National instruments library %s is not available: %s", lib, e.getMessage()));
 		}
 		loadTime = System.nanoTime() - loadStart;
 	}

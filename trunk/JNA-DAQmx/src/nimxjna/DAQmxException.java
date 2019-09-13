@@ -1,13 +1,13 @@
 package nimxjna;
 
-public class NIJnaException extends Exception {
+public class DAQmxException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @param message
 	 */
-	public NIJnaException(String message) {
+	public DAQmxException(String message) {
 		super(message);
 	}
 
