@@ -12,7 +12,7 @@ package nimxjna;
  * @author Doug Gillespie
  *
  */
-public class NIConstants {
+public class DAQmxConstants {
 
 
 	//********** Buffer Attributes **********
